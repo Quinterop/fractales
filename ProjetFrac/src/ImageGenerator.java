@@ -1,5 +1,4 @@
 import java.awt.image.BufferedImage;
-
 public class ImageGenerator {
 	BufferedImage image = new BufferedImage(10,10,1); //placeholder
 	// monothread
