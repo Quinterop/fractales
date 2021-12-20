@@ -1,6 +1,6 @@
 import java.awt.image.BufferedImage;
 public class ImageGenerator {
-	BufferedImage image = new BufferedImage(10,10,1); //placeholder
+	BufferedImage image = new BufferedImage(200,200,1); //placeholder
 	// monothread
 	void imageDrawer(int[][] colors) {
 		this.image = new BufferedImage(colors.length, colors[0].length, 2); // TYPE_INT_ARGB

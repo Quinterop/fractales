@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+import org.apache.commons.math3.complex.Complex;
+
 public class Main {
 	public int[] selectsize() {
 		Scanner sc = new Scanner(System.in);
@@ -13,9 +15,13 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		int[][] test = new int[5][5];
-		ImageGenerator imggen = new ImageGenerator();
-		imggen.imageDrawer(Math.calculate());
-		new View(imggen.image);
+		Complex c = new Complex(0.454,0.48685);
+		Complex x = new Complex(0.1269, 0.1889);
+		Calcul m = new Calcul();
+		m.comp=x;
+		m.fill();
+		ImageGenerator g = new ImageGenerator();
+		g.imageDrawer(m.calculate());
+		View v = new View(g.image);
 	}
 }
