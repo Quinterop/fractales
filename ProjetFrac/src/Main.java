@@ -15,8 +15,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		Complex c = new Complex(0.454,0.48685);
-		Complex x = new Complex(0.1269, 0.1889);
+		Complex x = new Complex(-0.7269, 0.1889);
 		Calcul m = new Calcul();
 		m.comp=x;
 		m.fill();
