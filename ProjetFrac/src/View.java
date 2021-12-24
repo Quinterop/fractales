@@ -10,7 +10,6 @@ import java.awt.Color;
 public class View {
 	public View(BufferedImage img) {
 		JFrame frame = new JFrame();
-
 		//BufferedImage img = null;
 		frame.getContentPane().add(new JLabel(new ImageIcon(img)));
 		frame.pack();

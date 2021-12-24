@@ -1,39 +1,38 @@
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.util.MathArrays.Function;
 import java.math.*;
-import java.lang.Math;
 
 public class Calcul {
-	public Complex comp;
-	public int[] polynome;
-	public int[][] colors;
+	private final Complex comp;
+	private final int[] polynome;
 	private final int maxIter;
 	private final double radius;
-	public Complex[][] graph;
-	public Complex topLeftComplex;
-	public double step;
+	private final Complex[][] graph;
+	private final Complex topLeftComplex;
+	private final double step;
 
 	public static class Builder {
-		//valeurs obligatoires : tabsizes et step ou tabsizes et plansize ou plansize et step
-		public Complex comp;
-		public int[] polynome = {0,0,1};
+		
+		private double planSize;
+		private Complex comp;
+		private int[] polynome;
 		private int maxIter;
 		private double radius;
-		public Complex topLeftComplex;
-		public double step;
-		public int[] tabsizes = new int[2];
-		public double plansize;//TODO : mettre 2 coords
-		
+		private Complex[][] graph;
+		private Complex topLeftComplex;
+		private double step;
+		private int tabX;
+		private int tabY;
+
 		public Builder() {
 			this.maxIter = 1000;
 			this.comp = new Complex(-0.7269, 0.1889);
 			this.step = 0.0;
-			this.plansize=0.0;
+			this.planSize = 0.0;
 			this.radius = 2.0;
 		}
 		public Builder size(int x,int y) {
-			this.tabsizes[0]= x;
-			this.tabsizes[1]= y;
+			this.tabX= x;
+			this.tabY= y;
 			return this;
 		}
 		public Builder step(double x) {
@@ -60,56 +59,57 @@ public class Calcul {
 			this.radius=x;
 			return this;
 		}
-		public Calcul build() {
-			if (tabsizes==null) {
-				tabsizes[0]= (int) (plansize/step);
-				tabsizes[1] = (int) (plansize/step);//TODO: utiliser l'autre val de plansize	
+		Complex[][] fillGraph() {
+			for (int i = 0; i < tabX; i++) {
+				for (int j = 0; j < tabY; j++) {
+					graph[i][j] = new Complex(topLeftComplex.getReal() + j * step,
+							topLeftComplex.getImaginary() - i * step);
+				}
 			}
-			if (plansize==0.0) {
-				plansize = step*tabsizes[0];
+			return graph;
+		}
+		public Calcul build() {
+			//TODO : Check illegal argument
+			if (tabX==0.0) {
+				tabX= (int) (planSize/step);
+				tabY = (int) (planSize/step);
+				//TODO: utiliser l'autre val de planSize	
+			}
+			if (planSize==0.0) {
+				planSize = step*tabX/2;
 			}
 			if (step==0.0){
-				step=plansize/tabsizes[0];
+				step=planSize/tabX;
 			}
 			if(topLeftComplex==null)
-				this.topLeftComplex = new Complex(-plansize, plansize);
-			
+				this.topLeftComplex = new Complex(-planSize, planSize);
+			graph = new Complex[tabX][tabY];
+			fillGraph();
+			System.out.println(topLeftComplex);
 			return new Calcul(this);
 		}
 	}
-	public Calcul(Builder b) {
-		comp=b.comp;
-		polynome=b.polynome;
-		maxIter=b.maxIter;
-		radius=b.radius;
-		topLeftComplex=b.topLeftComplex;
-		step=b.step;
-		graph = new Complex[b.tabsizes[0]][b.tabsizes[1]];
-		colors= new int[b.tabsizes[0]][b.tabsizes[1]];
+	// valeurs obligatoires : tabsizes et step ou tabsizes et planSize ou planSize
+	// et step
+
+	public Calcul(Builder builder) {
+		comp = builder.comp;
+		polynome = builder.polynome;
+		maxIter = builder.maxIter;
+		radius = builder.radius;
+		topLeftComplex = builder.topLeftComplex;
+		step = builder.step;
+		graph = builder.graph;
+		// colors= new int[builder.tabX][builder.tabY];
 	}
 
-	/*public Calcul(int x, int y, double h, Complex c) {
-		this.colors = new int[x][y];
-		this.graph = new Complex[x][y];
-		this.step = h;
-		this.topLeftComplex = c;
-		this.radius = 2.0;
-	}
-*/
-	public void setSize(int x, int y) {
-		colors = new int[x][y];
-		graph = new Complex[x][y];
-	}
+	/*
+	 * public Calcul(int x, int y, double h, Complex c) { this.colors = new
+	 * int[x][y]; this.graph = new Complex[x][y]; this.step = h; this.topLeftComplex
+	 * = c; this.radius = 2.0; }
+	 */
 
-	public void setStep(int h) {
-		step = h;
-	}
-
-	public void setTopLeftComplex(Complex c) {
-		topLeftComplex = c;
-	}
-
-	double module(Complex z) {
+	static double module(Complex z) {
 		return Math.sqrt(z.getReal() * z.getReal() + z.getImaginary() * z.getImaginary());
 	}
 
@@ -126,26 +126,19 @@ public class Calcul {
 			}
 
 		}
-		System.out.println(ite);
-
+		//System.out.println(ite);
 		return ite;
-
+	}
+	Complex[][] getGraph(){
+		return graph; //renvoyer une copie ?
 	}
 
-	Complex[][] fill() {
-		for (int i = 0; i < colors.length; i++) {
-			for (int j = 0; j < colors[0].length; j++) {
-				graph[i][j] = new Complex(topLeftComplex.getReal() + j * step, topLeftComplex.getImaginary() - i * step);			}
-		}
-		return graph;
+	public int getX() {
+		return graph.length;
 	}
 
-	int[][] calculate() {
-		for (int i = 0; i < colors.length; i++) {
-			for (int j = 0; j < colors[0].length; j++) {
-				colors[i][j] = divergenceIndex(graph[i][j]);
-			}
-		}
-		return colors;
+	public int getY() {
+		return graph[0].length;
 	}
+
 }

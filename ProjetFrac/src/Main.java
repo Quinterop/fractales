@@ -1,12 +1,12 @@
-import java.util.Locale.Builder;
 import java.util.Scanner;
 
 import org.apache.commons.math3.complex.Complex;
 
+
 public class Main {
 	public static void maker() {
 		Complex x = new Complex(-0.7269, 0.1889);
-		ImageGenerator g = new ImageGenerator();
+	//	ImageGenerator g = new ImageGenerator();
 		Scanner sc = new Scanner(System.in);
 		System.out.println("select one :" + '\n' + 
 				"1 : step and imagesize" + '\n' + 
@@ -95,8 +95,10 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		Builder b = new Builder();
-		Calcul c = new Calcul();
+		Complex x = new Complex(-0.7269, 0.1889);
+		Calcul c = new Calcul.Builder().size(200,200).step(0.01).build(); 
+		ImageGenerator g = new ImageGenerator(c);
+		View v = new View(g.image);
 
 		/*
 		 * // Complex x = new Complex(-0,7269, 0,1889); Calcul m = new Calcul(); m.comp
