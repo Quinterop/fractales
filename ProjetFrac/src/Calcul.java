@@ -7,7 +7,7 @@ public class Calcul {
 	private final int maxIter;
 	private final double radius;
 	private final Complex[][] graph;
-	private final Complex topLeftComplex;
+	private final Complex graphOrigin;
 	private final double step;
 
 	public static class Builder {
@@ -18,7 +18,7 @@ public class Calcul {
 		private int maxIter;
 		private double radius;
 		private Complex[][] graph;
-		private Complex topLeftComplex;
+		private Complex graphOrigin;
 		private double step;
 		private int tabX;
 		private int tabY;
@@ -43,8 +43,8 @@ public class Calcul {
 			this.maxIter=x;
 			return this;
 		}
-		public Builder topLeftComplex(Complex x) {
-			this.topLeftComplex=x;
+		public Builder graphOrigin(Complex x) {
+			this.graphOrigin=x;
 			return this;
 		}
 		public Builder comp(Complex x) {
@@ -62,10 +62,11 @@ public class Calcul {
 		Complex[][] fillGraph() {
 			for (int i = 0; i < tabX; i++) {
 				for (int j = 0; j < tabY; j++) {
-					graph[i][j] = new Complex(topLeftComplex.getReal() + j * step,
-							topLeftComplex.getImaginary() - i * step);
+					graph[i][j] = new Complex(graphOrigin.getReal() - planSize+ j * step,
+							graphOrigin.getImaginary() +planSize - i * step);
 				}
 			}
+			System.out.println(graph[0][0]);
 			return graph;
 		}
 		public Calcul build() {
@@ -81,11 +82,11 @@ public class Calcul {
 			if (step==0.0){
 				step=planSize/tabX;
 			}
-			if(topLeftComplex==null)
-				this.topLeftComplex = new Complex(-planSize, planSize);
+			if(graphOrigin==null)
+				this.graphOrigin = new Complex(0,0);
 			graph = new Complex[tabX][tabY];
 			fillGraph();
-			System.out.println(topLeftComplex);
+			System.out.println(graphOrigin);
 			return new Calcul(this);
 		}
 	}
@@ -97,7 +98,7 @@ public class Calcul {
 		polynome = builder.polynome;
 		maxIter = builder.maxIter;
 		radius = builder.radius;
-		topLeftComplex = builder.topLeftComplex;
+		graphOrigin = builder.graphOrigin;
 		step = builder.step;
 		graph = builder.graph;
 		// colors= new int[builder.tabX][builder.tabY];
@@ -105,7 +106,7 @@ public class Calcul {
 
 	/*
 	 * public Calcul(int x, int y, double h, Complex c) { this.colors = new
-	 * int[x][y]; this.graph = new Complex[x][y]; this.step = h; this.topLeftComplex
+	 * int[x][y]; this.graph = new Complex[x][y]; this.step = h; this.graphOrigin
 	 * = c; this.radius = 2.0; }
 	 */
 
