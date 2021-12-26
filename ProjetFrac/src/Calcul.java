@@ -2,6 +2,7 @@ import org.apache.commons.math3.complex.Complex;
 import java.math.*;
 
 public class Calcul {
+<<<<<<< ProjetFrac/src/Calcul.java
 	private final Complex comp;
 	private final int[] polynome;
 	private final int maxIter;
@@ -110,13 +111,49 @@ public class Calcul {
 	 */
 
 	static double module(Complex z) {
+=======
+	public Complex comp;
+	public int[] polynom;
+	public Function fun;
+	public int[][] colors;
+	private final int matIter = 1000;
+	private final double radius = 2.0;
+	public Complex[][] graph;
+	public Complex topLeftComplex;
+	public double step;
+
+	public Calcul(int x, int y, double h, Complex c) {
+		colors = new int[x][y];
+		graph = new Complex[x][y];
+		step = h;
+		topLeftComplex = c;
+	}
+
+	public void setSize(int x, int y) {
+		colors = new int[x][y];
+		graph = new Complex[x][y];
+	}
+
+	public void setStep(int h) {
+		step = h;
+	}
+
+	public void setTopLeftComplex(Complex c) {
+		topLeftComplex = c;
+	}
+
+	double module(Complex z) {
+>>>>>>> ProjetFrac/src/Calcul.java
 		return Math.sqrt(z.getReal() * z.getReal() + z.getImaginary() * z.getImaginary());
 	}
 
 	int divergenceIndex(Complex z0) {
+		//boolean test = true;
+
 		int ite = 0;
 		Complex zn = z0;
 		// sortie de boucle si divergence
+<<<<<<< ProjetFrac/src/Calcul.java
 		while (ite < maxIter && (Math.abs(module(zn))) <= radius) {
 			while (ite < maxIter && (module(zn)) <= radius) {
 				zn = zn.multiply(zn);
@@ -127,14 +164,53 @@ public class Calcul {
 
 		}
 		//System.out.println(ite);
+=======
+		while (ite < matIter && (module(zn)) <= radius) {
+			for (int i = 0; i < polynom.length; i++) {
+				
+				//Complex zx = zn.pow(i);
+				//zx=zx.multiply(polynom[i]);
+				//zn = zx.add(zn);
+			}
+			zn = zn.pow(2);	
+			zn = zn.add(comp);
+			
+			
+			//if (test) {
+			//	System.out.println(zn);
+			//	System.out.println(zn2);
+				//ca devrait etre pareil
+			//	test = false;
+		//	}
+			
+
+			
+			
+			ite++;
+		}
+		// System.out.println(ite);
+>>>>>>> ProjetFrac/src/Calcul.java
 		return ite;
 	}
 	Complex[][] getGraph(){
 		return graph; //renvoyer une copie ?
 	}
 
+<<<<<<< ProjetFrac/src/Calcul.java
 	public int getX() {
 		return graph.length;
+=======
+	Complex[][] fill() {
+		for (int i = 0; i < colors.length; i++) {
+			for (int j = 0; j < colors[0].length; j++) {
+				graph[i][j] = new Complex(topLeftComplex.getReal() + j * step,
+						topLeftComplex.getImaginary() - i * step);
+			}
+		}
+		// System.out.println(graph[100][100].getReal()+"
+		// "+graph[100][100].getImaginary());
+		return graph;
+>>>>>>> ProjetFrac/src/Calcul.java
 	}
 
 	public int getY() {
