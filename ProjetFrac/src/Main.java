@@ -13,7 +13,7 @@ public class Main {
 				"2 : complex plan size and step"+ '\n' + 
 				"3 : imagesize and plan size");
 		int choice = sc.nextInt();
-		switch (choice) {
+		switch (choice) { 
 		case 1:{
 			double step = sc.nextDouble();
 			int size = sc.nextInt();
@@ -99,17 +99,19 @@ public class Main {
 		Calcul c = new Calcul.Builder().size(200,200).step(0.01).build(); 
 		ImageGenerator g = new ImageGenerator(c);
 		View v = new View(g.image);
-
-		/*
-		 * // Complex x = new Complex(-0,7269, 0,1889); Calcul m = new Calcul(); m.comp
-		 * = selectJulia2(); m.polynome = selectJulia();
-		 * System.out.print("fonction: f(x)="); for (int i = m.polynome.length - 1; i >=
-		 * 0; i--) System.out.print(m.polynome[i] + "" + "x" + "^" + i + "+ ");
-		 * System.out.print(m.comp); m.fill(); ImageGenerator g = new ImageGenerator();
-		 * g.imageDrawer(m.calculate()); View v = new View(g.image); Calcul m = new
-		 * Calcul(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
-		 * m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
-		 * View(g.image);
+		 
+	
+		 /*Complex x = new Complex(-0.7269, 0.1889); 
+		 Calcul m = new Calcul(); 
+		 m.comp = selectJulia2(); 
+		  m.polynome = selectJulia();
+		  System.out.print("fonction: f(x)="); for (int i = m.polynome.length - 1; i >=
+		  0; i--) System.out.print(m.polynome[i] + "" + "x" + "^" + i + "+ ");
+		  System.out.print(m.comp); m.fill(); ImageGenerator g = new ImageGenerator();
+		  g.imageDrawer(m.calculate()); View v = new View(g.image); Calcul m = new
+		  Calcul(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
+		  m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
+		  View(g.image);
 		 */
 	}
 }

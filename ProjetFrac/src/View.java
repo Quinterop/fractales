@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.Color;
 
 public class View {
+	
 	public View(BufferedImage img) {
 		JFrame frame = new JFrame();
 		//BufferedImage img = null;

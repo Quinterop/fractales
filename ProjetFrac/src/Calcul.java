@@ -21,7 +21,7 @@ public class Calcul {
 		private Complex topLeftComplex;
 		private double step;
 		private int tabX;
-		private int tabY;
+		private int tabY; 
 
 		public Builder() {
 			this.maxIter = 1000;
@@ -59,6 +59,7 @@ public class Calcul {
 			this.radius=x;
 			return this;
 		}
+		
 		Complex[][] fillGraph() {
 			for (int i = 0; i < tabX; i++) {
 				for (int j = 0; j < tabY; j++) {
@@ -68,6 +69,7 @@ public class Calcul {
 			}
 			return graph;
 		}
+		
 		public Calcul build() {
 			//TODO : Check illegal argument
 			if (tabX==0.0) {
@@ -140,5 +142,12 @@ public class Calcul {
 	public int getY() {
 		return graph[0].length;
 	}
+	
+	public double getStep() {
+		return step;
+	}
 
+	public int getMaxIter() {
+		return maxIter;
+	}
 }
