@@ -118,8 +118,8 @@ public class Main {
 		return g.image;
 	}
 	
-	public Calcul genButton(double plan, int size,double step) {
-		Calcul calc = new Calcul.Builder().plan(plan).size(size,size).step(step).build();
+	public Calcul genButton(double plan, int size,double step, Complex c) {
+		Calcul calc = new Calcul.Builder().plan(plan).size(size,size).step(step).comp(c).build();
 		return calc;
 	}
 

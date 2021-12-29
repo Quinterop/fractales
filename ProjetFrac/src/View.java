@@ -13,12 +13,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.border.BevelBorder;
+
+import org.apache.commons.math3.complex.Complex;
+
 import java.awt.event.*;
 
-
-import javafx.event.ActionEvent;
-
-public class View extends JFrame implements ActionListener{
+public class View extends JFrame {
 	//private Controller c;
 	private Main m;
 	private Calcul c;
@@ -29,7 +29,8 @@ public class View extends JFrame implements ActionListener{
 	private JTextField plan;
 	private JTextField imageSize;
 	private JTextField gap;
-
+	private JTextField complexRealPart;
+	private JTextField complexImagPart;
 
 	public View(Main m) {
 		//@wbp.parser.constructor
@@ -89,11 +90,20 @@ public class View extends JFrame implements ActionListener{
 		JLabel complex = new JLabel("Complexe C dans la fonction f(x)=x²+C");
 		row2.add(complex);
 		
-		JTextField complexField = new JTextField("-0.7269, 0.1889");
-		row2.add(complexField);
+		complexRealPart = new JTextField("-0.7269");
+		row2.add(complexRealPart);
 		
 		Component horizontalGlue = Box.createHorizontalGlue();
 		row2.add(horizontalGlue);
+		
+		JLabel lblNewLabel = new JLabel("+");
+		row2.add(lblNewLabel);
+		
+		complexImagPart = new JTextField("0.1889");
+		row2.add(complexImagPart);
+		
+		JLabel lblNewLabel_1 = new JLabel("i");
+		row2.add(lblNewLabel_1);
 		
 		gen = new JButton("Generer !");
 		row2.add(gen);
@@ -168,23 +178,15 @@ public class View extends JFrame implements ActionListener{
 		this.setVisible(true);
 	}
 	private void changeImage() {
-		Calcul ca =m.genButton(Double.parseDouble(plan.getText()), Integer.parseInt(imageSize.getText()), Double.parseDouble(gap.getText()));
+		Calcul ca =m.genButton(Double.parseDouble(plan.getText()), 
+				Integer.parseInt(imageSize.getText()), 
+				Double.parseDouble(gap.getText()), 
+				new Complex ((Double.parseDouble(complexRealPart.getText())), (Double.parseDouble(complexImagPart.getText()))));
 		ImageGenerator imgen = new ImageGenerator(ca);
 		imgen.calculate();
 		im=imgen.image;
 
 		this.repaint();
-	}
-
-
-	@Override
-	public void actionPerformed(java.awt.event.ActionEvent e) {
-		if(e.getSource()==gen) {
-			System.out.println("listener");
-			Calcul c =m.genButton(0, 800, 0);
-			ImageGenerator g = new ImageGenerator(c);
-			im=g.image;
-		}
 	}
 	
 	
