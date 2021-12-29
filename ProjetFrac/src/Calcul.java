@@ -9,6 +9,7 @@ public class Calcul {
 	private final Complex[][] graph;
 	private final Complex graphOrigin;
 	private final double step;
+	private final double planSize;
 
 	public static class Builder {
 		
@@ -33,6 +34,10 @@ public class Calcul {
 		public Builder size(int x,int y) {
 			this.tabX= x;
 			this.tabY= y;
+			return this;
+		}
+		public Builder plan(double x) {
+			this.planSize=x;
 			return this;
 		}
 		public Builder step(double x) {
@@ -72,15 +77,18 @@ public class Calcul {
 		public Calcul build() {
 			//TODO : Check illegal argument
 			if (tabX==0.0) {
-				tabX= (int) (planSize/step);
-				tabY = (int) (planSize/step);
+				tabX= (int) (planSize/step)*2;
+				tabY = (int) (planSize/step)*2;
+				//System.out.println(tabX);
 				//TODO: utiliser l'autre val de planSize	
 			}
 			if (planSize==0.0) {
 				planSize = step*tabX/2;
+				//System.out.println("planSize: " + planSize);
 			}
 			if (step==0.0){
-				step=planSize/tabX;
+				step=planSize/tabX*2;
+				//System.out.println("step: " + step);
 			}
 			if(graphOrigin==null)
 				this.graphOrigin = new Complex(0,0);
@@ -101,6 +109,7 @@ public class Calcul {
 		graphOrigin = builder.graphOrigin;
 		step = builder.step;
 		graph = builder.graph;
+		planSize = builder.planSize;
 		// colors= new int[builder.tabX][builder.tabY];
 	}
 
@@ -130,6 +139,7 @@ public class Calcul {
 		//System.out.println(ite);
 		return ite;
 	}
+	//RENVOYER COPIES ?
 	Complex[][] getGraph(){
 		return graph; //renvoyer une copie ?
 	}
@@ -140,6 +150,15 @@ public class Calcul {
 
 	public int getY() {
 		return graph[0].length;
+	}
+public double getPlan() {
+		return planSize;
+	}
+	public int getSize() {
+		return graph.length;
+	}
+	public double getStep() {
+		return step;
 	}
 
 }
