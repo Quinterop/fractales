@@ -2,7 +2,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import static java.util.stream.IntStream.range;
-
+import java.util.concurrent.CountDownLatch;
 import javax.imageio.ImageIO;
 import java.awt.Color;
 
@@ -30,8 +30,10 @@ public class ImageGenerator {
 	 * colors; }
 	 */
 
-	ImageGenerator(Calcul c, int nombreThreads) {
+	ImageGenerator(Calcul c, int nombreThreads) throws InterruptedException {
 		this.nombreThreads = nombreThreads;
+		CountDownLatch latch = new CountDownLatch(nombreThreads);
+		long start = System.currentTimeMillis();
 		this.c = c;
 		tabX = c.getX();
 		tabY = c.getY();
@@ -39,22 +41,37 @@ public class ImageGenerator {
 		this.image = new BufferedImage(tabX, tabY, BufferedImage.TYPE_INT_RGB);
 		// File f = new File("images/" + name + ".png");
 		int div = tabX / nombreThreads;
-		for (int i = 0; i < div; i++) {
-			System.out.println(div);
-			System.out.println(i);
+		for (int i = 0; i < nombreThreads; i++) {
+			final int k = i;
+			//System.out.println("aaaaa"+i);
+			//System.out.println(latch.getCount());
+			
 			if (i == div - 1 && div * nombreThreads != tabX) {
-				System.out.println("test");
-				range(i, tabX).parallel()
-						.forEach(a -> range(0, tabY)
-								.parallel()
-								.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
-
-			}
-			range(i*nombreThreads, nombreThreads*(i + 1)).parallel()
+				new Thread(() -> {
+					range(k * nombreThreads, tabX)
+					.parallel()
 					.forEach(a -> range(0, tabY)
 							.parallel()
 							.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
+					latch.countDown();
+				}).start();
+
+			}
+			
+			new Thread(() -> {
+				range(k * div, div * (k + 1))
+				.parallel()
+						.forEach(a -> range(0, tabY)
+								.parallel()
+								.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
+				latch.countDown();
+				//System.out.println(latch.getCount());
+			}).start();
 		}
+		latch.await(); 
+		long finish = System.currentTimeMillis();
+		long timeElapsed = finish - start;
+		System.out.println(timeElapsed);
 	}
 
 	public int calculate(Calcul c, int i, int j) {
