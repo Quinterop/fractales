@@ -97,7 +97,7 @@ public class Main {
 	public static void main(String[] args) {
 		Complex x = new Complex(-0.7269, 0.1889);
 		Calcul c = new Calcul.Builder().size(200,200).step(0.01).build(); 
-		ImageGenerator g = new ImageGenerator(c);
+		ImageGenerator g = new ImageGenerator(c,21);
 		View v = new View(g.image);
 		 
 	
