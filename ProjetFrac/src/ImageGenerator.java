@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.IOException;
 import static java.util.stream.IntStream.range;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
+
 import javax.imageio.ImageIO;
 import java.awt.Color;
 
@@ -34,6 +36,7 @@ public class ImageGenerator {
 		this.nombreThreads = nombreThreads;
 		CountDownLatch latch = new CountDownLatch(nombreThreads);
 		long start = System.currentTimeMillis();
+		Thread[] threads = new Thread[nombreThreads];
 		this.c = c;
 		tabX = c.getX();
 		tabY = c.getY();
@@ -47,18 +50,19 @@ public class ImageGenerator {
 			//System.out.println(latch.getCount());
 			
 			if (i == div - 1 && div * nombreThreads != tabX) {
-				new Thread(() -> {
+				
+				threads[i] = new Thread(() -> {
 					range(k * nombreThreads, tabX)
 					.parallel()
 					.forEach(a -> range(0, tabY)
 							.parallel()
 							.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
 					latch.countDown();
-				}).start();
-
-			}
+				});
+				threads[i].start();
+			}else {
 			
-			new Thread(() -> {
+				threads[k] = new Thread(() -> {
 				range(k * div, div * (k + 1))
 				.parallel()
 						.forEach(a -> range(0, tabY)
@@ -66,9 +70,21 @@ public class ImageGenerator {
 								.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
 				latch.countDown();
 				//System.out.println(latch.getCount());
-			}).start();
+			});
+				threads[i].start();
+			}
+			
 		}
-		latch.await(); 
+	//	latch.await(); 
+		
+		Stream.of(threads).forEach(k ->{
+			try {
+				k.join();
+			} catch (InterruptedException e) {
+				System.out.println("could not join");
+				e.printStackTrace();
+			}
+		});
 		long finish = System.currentTimeMillis();
 		long timeElapsed = finish - start;
 		System.out.println(timeElapsed);

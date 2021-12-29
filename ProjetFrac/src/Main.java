@@ -96,8 +96,8 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 		Complex x = new Complex(-0.7269, 0.1889);
-		Calcul c = new Calcul.Builder().size(200,200).step(0.01).build(); 
-		ImageGenerator g = new ImageGenerator(c,4);
+		Calcul c = new Calcul.Builder().size(5000,5000).step(0.0004).build(); 
+		ImageGenerator g = new ImageGenerator(c,Runtime.getRuntime().availableProcessors());
 		View v = new View(g.image);
 		 
 	
