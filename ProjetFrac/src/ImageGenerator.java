@@ -15,6 +15,7 @@ public class ImageGenerator {
 	private final int tabY;
 	private int[][] colors;
 	BufferedImage image = new BufferedImage(200,200,2); //placeholder
+	private final int nombreThreads;
 	
 	
 //THREADS DANS CETTE CLASSE 
@@ -44,6 +45,11 @@ public class ImageGenerator {
 		return colors;
 	}*/
 	
+	int division() {
+		return tabX / nombreThreads;
+	}
+	
+	
 	ImageGenerator(Calcul c) {
 		this.c=c;
 		tabX=c.getX();
@@ -51,9 +57,13 @@ public class ImageGenerator {
 		colors = new int[tabX][tabY];
 		this.image = new BufferedImage(tabX, tabY, BufferedImage.TYPE_INT_RGB);
 		//File f = new File("images/" + name + ".png");
-		range(0, c.getX())
+		int thread; 
+		if(division() * nombreThreads == tabX) {
+			thread = division();
+		}
+		range(0, tabX)
                 .parallel()
-                .forEach(i -> range(0,c.getY())
+                .forEach(i -> range(0, tabY)
                         .parallel()
                         .forEach(j -> image.setRGB(i,j,calculate(c,i,j))));
     }
