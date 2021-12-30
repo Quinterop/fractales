@@ -154,6 +154,15 @@ public class Calcul {
 		return graph[0].length;
 	}
 
+
+public double getPlan() {
+		return planSize;
+	}
+	
+	public int getSize() {
+		return graph.length;
+	}
+	
 	public double getStep() {
 		return step;
 	}

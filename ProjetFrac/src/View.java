@@ -16,6 +16,8 @@ import javax.swing.border.BevelBorder;
 
 import org.apache.commons.math3.complex.Complex;
 
+import java.awt.event.*;
+
 
 public class View extends JFrame {
 	//private Controller c;
@@ -182,6 +184,7 @@ public class View extends JFrame {
 		this.setVisible(true);
 	}
 	private void changeImage() throws InterruptedException {
+
 		Calcul ca =m.genButton(Double.parseDouble(plan.getText()), 
 				Integer.parseInt(imageSize.getText()), 
 				Double.parseDouble(gap.getText()), 

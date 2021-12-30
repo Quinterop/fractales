@@ -125,6 +125,19 @@ public class Main {
 		  Calcul(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
 		  m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
 		  View(g.image);
+<<<<<<< HEAD
+=======
+	public BufferedImage generate() {
+		Calcul c = new Calcul.Builder().plan(1.0).size(500, 500).build();
+		ImageGenerator g = new ImageGenerator(c);
+		return g.image;
+	}
+	public BufferedImage generate2() {
+		Calcul c = new Calcul.Builder().plan(1.0).size(400, 400).build();
+		ImageGenerator g = new ImageGenerator(c);
+		return g.image;
+	}
+>>>>>>> branch 'Stream' of https://gaufre.informatique.univ-paris-diderot.fr/sya/projetfract.git
 	
 
 	public static void main(String[] args) {
@@ -154,7 +167,7 @@ public class Main {
 		 * Calcul(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
 		 * m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
 		 * View(g.image);
->>>>>>> refs/remotes/origin/master
+
 		 */
 	}
 
