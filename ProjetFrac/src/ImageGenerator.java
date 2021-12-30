@@ -34,7 +34,7 @@ public class ImageGenerator {
 
 	ImageGenerator(Calcul c, int nombreThreads) throws InterruptedException {
 		this.nombreThreads = nombreThreads;
-		CountDownLatch latch = new CountDownLatch(nombreThreads);
+		//CountDownLatch latch = new CountDownLatch(nombreThreads);
 		long start = System.currentTimeMillis();
 		Thread[] threads = new Thread[nombreThreads];
 		this.c = c;
@@ -52,12 +52,12 @@ public class ImageGenerator {
 			if (i == div - 1 && div * nombreThreads != tabX) {
 				
 				threads[i] = new Thread(() -> {
-					range(k * nombreThreads, tabX)
+					range(k * div, tabX)
 					.parallel()
 					.forEach(a -> range(0, tabY)
 							.parallel()
 							.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
-					latch.countDown();
+					//latch.countDown();
 				});
 				threads[i].start();
 			}else {
@@ -68,7 +68,7 @@ public class ImageGenerator {
 						.forEach(a -> range(0, tabY)
 								.parallel()
 								.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
-				latch.countDown();
+				//latch.countDown();
 				//System.out.println(latch.getCount());
 			});
 				threads[i].start();
