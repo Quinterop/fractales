@@ -12,7 +12,7 @@ import org.apache.commons.math3.complex.Complex;
 
 public class ImageGenerator {
 
-	private final Calcul c;
+	private final Fractale c;
 	private final int tabX;
 	private final int tabY;
 	private int[][] colors;
@@ -21,7 +21,7 @@ public class ImageGenerator {
 
 //THREADS DANS CETTE CLASSE 
 	/*
-	 * ImageGenerator (Calcul c) { this.c=c; tabX=c.getX(); tabY=c.getY(); colors =
+	 * ImageGenerator (Fractale c) { this.c=c; tabX=c.getX(); tabY=c.getY(); colors =
 	 * new int[tabX][tabY]; colors=calculate(); this.image = new BufferedImage(tabX,
 	 * tabY, BufferedImage.TYPE_INT_RGB); // TYPE_INT_ARGB for (int i = 0; i < tabX;
 	 * i++) { for (int j = 0; j < tabY; j++) { image.setRGB(i,j,colors[i][j]); } }
@@ -32,7 +32,7 @@ public class ImageGenerator {
 	 * colors; }
 	 */
 
-	ImageGenerator(Calcul c, int nombreThreads) throws InterruptedException {
+	ImageGenerator(Fractale c, int nombreThreads) throws InterruptedException {
 		this.nombreThreads = nombreThreads;
 		//CountDownLatch latch = new CountDownLatch(nombreThreads);
 		long start = System.currentTimeMillis();
@@ -90,7 +90,7 @@ public class ImageGenerator {
 		System.out.println(timeElapsed);
 	}
 
-	public int calculate(Calcul c, int i, int j) {
+	public int calculate(Fractale c, int i, int j) {
 		colors[i][j] = c.divergenceIndex(c.getGraph()[i][j]);
 		return colors[i][j];
 	}

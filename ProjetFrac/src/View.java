@@ -20,19 +20,22 @@ import java.awt.event.*;
 
 public class View extends JFrame {
 	// private Controller c;
-	private Main m;
-	private final static Dimension MAX_TEXT_SIZE = new Dimension(100, 20);
-
-	// @wbp.parser.constructor
+	private Controller m;
+	private static final Dimension MAX_TEXT_SIZE = new Dimension(100, 20);
+	private static final Dimension MAX_SLIDER_SIZE = new Dimension(180, 20);
 	private BufferedImage im;
 	private JTextField gap;
 	private JTextField complexRealPart;
 	private JTextField complexImagPart;
 	private JPanel image;
 	private JTextField imageSize;
+	private JTextField zoomVal;
 	private JSlider sliderR;
 	private JSlider sliderV;
 	private JSlider sliderB;
+	private JLabel displayR;
+	private JLabel displayG;
+	private JLabel displayB;
 
 	public View(BufferedImage im) {
 		super("fractales");
@@ -44,7 +47,7 @@ public class View extends JFrame {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public View(Main m) throws InterruptedException {
+	public View(Controller m) throws InterruptedException {
 		// @wbp.parser.constructor
 		super("fractales");
 		// frame
@@ -81,6 +84,13 @@ public class View extends JFrame {
 		gap = new JTextField("0.003");
 		imparams.add(gap);
 		gap.setMaximumSize(MAX_TEXT_SIZE);
+		
+		JLabel imageSizeL = new JLabel("Taille de l'image : ");
+		imparams.add(imageSizeL);
+		
+		imageSize = new JTextField("500");
+		imageSize.setMaximumSize(new Dimension(100, 20));
+		imparams.add(imageSize);
 
 
 		Box row2 = Box.createHorizontalBox();
@@ -103,13 +113,6 @@ public class View extends JFrame {
 
 		JLabel lblNewLabel_1 = new JLabel("i ");
 		row2.add(lblNewLabel_1);
-
-		JLabel imageSizeL = new JLabel("Taille de l'image : ");
-		row2.add(imageSizeL);
-
-		imageSize = new JTextField("500");
-		imageSize.setMaximumSize(new Dimension(100, 20));
-		row2.add(imageSize);
 
 		Box moveRow = Box.createHorizontalBox();
 		moveRow.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -159,35 +162,111 @@ public class View extends JFrame {
 				e2.printStackTrace();
 			}
 		});
-
-		JTextField zoomVal = new JTextField();
-		zoomVal.setText("20");
-		moveRow.add(zoomVal);
-		zoomVal.setColumns(10);
-		zoomVal.setMaximumSize(MAX_TEXT_SIZE);
-
+		
+		Box zoomRow = Box.createHorizontalBox();
+		zoomRow.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		verticalBox.add(zoomRow);
+		
 		JButton zoom = new JButton("Zoom");
-		moveRow.add(zoom);
-
+		zoomRow.add(zoom);
+		
 		JButton unzoom = new JButton("Unzoom");
-		moveRow.add(unzoom);
+		zoomRow.add(unzoom);
+		
+		zoomVal = new JTextField();
+		zoomVal.setText("20");
+		zoomVal.setMaximumSize(new Dimension(100, 20));
+		zoomVal.setColumns(10);
+		zoomRow.add(zoomVal);
+		
+		Box boxR = Box.createHorizontalBox();
+		verticalBox.add(boxR);
+		
+		sliderR = new JSlider();
+		sliderR.setValue(1);
+		sliderR.setToolTipText("Rouge");
+		sliderR.setSnapToTicks(true);
+		sliderR.setPaintLabels(true);
+		sliderR.setMinimum(0);
+		sliderR.setMaximumSize(new Dimension(180, 20));
+		sliderR.setMaximum(255);
+		boxR.add(sliderR);
+		
+		displayR = new JLabel("R : "+sliderR.getValue());
+		boxR.add(displayR);
+		
+		Box boxV = Box.createHorizontalBox();
+		verticalBox.add(boxV);
+		
+		sliderV = new JSlider();
+		sliderV.setValue(1);
+		sliderV.setToolTipText("Vert");
+		sliderV.setSnapToTicks(true);
+		sliderV.setPaintLabels(true);
+		sliderV.setMinimum(0);
+		sliderV.setMaximumSize(new Dimension(180, 20));
+		sliderV.setMaximum(255);
+		sliderV.setForeground(Color.GREEN);
+		boxV.add(sliderV);
+		
+		displayG = new JLabel("V : "+sliderV.getValue());
+		boxV.add(displayG);
+		
+		Box boxB = Box.createHorizontalBox();
+		verticalBox.add(boxB);
+		
+		sliderB = new JSlider();
+		sliderB.setValue(1);
+		sliderB.setToolTipText("Bleu");
+		sliderB.setSnapToTicks(true);
+		sliderB.setPaintLabels(true);
+		sliderB.setMinimum(0);
+		sliderB.setMaximumSize(new Dimension(180, 20));
+		sliderB.setMaximum(255);
+		sliderB.setForeground(Color.BLUE);
+		boxB.add(sliderB);
+		
+		displayB = new JLabel("B : "+sliderB.getValue());
+		boxB.add(displayB);
 
-		zoom.addActionListener(e -> {
+		JLabel colorsLabel = new JLabel("Couleurs : R G B");
+		verticalBox.add(colorsLabel);
+
+
+		JButton gen = new JButton("Generer !");
+		verticalBox.add(gen);
+
+		Component verticalGlue = Box.createVerticalGlue();
+		verticalBox.add(verticalGlue);
+		// TODO: Mettre des listeners pour set la derniere valeur (se trigger quand on
+		// fait entrée)
+		
+		sliderR.addChangeListener(e -> updateColorsLabel(1));
+		sliderV.addChangeListener(e -> updateColorsLabel(2));
+		sliderB.addChangeListener(e -> updateColorsLabel(3));
+
+		gen.addActionListener(e -> {
 			try {
-				String str = Double
-						.toString(Double.parseDouble(gap.getText()) / (Double.parseDouble(zoomVal.getText()) * 0.09));
-				System.out.println("zoom : " + Double.parseDouble(zoomVal.getText()) * 0.9);
-				System.out.println("str : " + str);
-				gap.setText(str);
-				changeImage(0,0);
+				changeImage(0, 0);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
-		unzoom.addActionListener(e -> {
-
-
+		zoom.addActionListener(e -> {
+            try {
+                String str = Double
+                        .toString(Double.parseDouble(gap.getText()) / (Double.parseDouble(zoomVal.getText()) * 0.09));
+                System.out.println("zoom : " + Double.parseDouble(zoomVal.getText()) * 0.9);
+                System.out.println("str : " + str);
+                gap.setText(str);
+                changeImage(0,0);
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+        
+        unzoom.addActionListener(e -> {
             try {
                 String str = Double
                         .toString(Double.parseDouble(gap.getText()) * (Double.parseDouble(zoomVal.getText()) * 0.09));
@@ -204,58 +283,7 @@ public class View extends JFrame {
             System.out.println("Have fun!");
         });
 
-		JLabel colorsLabel = new JLabel("Couleurs : R G B");
-		verticalBox.add(colorsLabel);
-
-		sliderR = new JSlider();
-		sliderR.setValue(0);
-		sliderR.setToolTipText("Rouge");
-		sliderR.setSnapToTicks(true);
-		sliderR.setPaintLabels(true);
-		sliderR.setMinimum(1);
-		sliderR.setMaximum(255);
-		verticalBox.add(sliderR);
-
-		sliderV = new JSlider();
-		sliderV.setValue(0);
-		sliderV.setToolTipText("Vert");
-		sliderV.setSnapToTicks(true);
-		sliderV.setPaintLabels(true);
-		sliderV.setMinimum(1);
-		sliderV.setMaximum(255);
-		sliderV.setForeground(Color.GREEN);
-		verticalBox.add(sliderV);
-
-		sliderB = new JSlider();
-		sliderB.setForeground(Color.BLUE);
-		sliderB.setValue(0);
-		sliderB.setToolTipText("Bleu");
-		sliderB.setSnapToTicks(true);
-		sliderB.setPaintLabels(true);
-		sliderB.setMinimum(1);
-		sliderB.setMaximum(255);
-		verticalBox.add(sliderB);
-
-		JButton gen = new JButton("Generer !");
-		verticalBox.add(gen);
-
-		Component verticalGlue = Box.createVerticalGlue();
-		verticalBox.add(verticalGlue);
-		// TODO: Mettre des listeners pour set la derniere valeur (se trigger quand on
-		// fait entrée)
-
-		gen.addActionListener(e -> {
-			try {
-				changeImage(0, 0);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		});
-
 		im = m.generateImage();
-
-		JLabel placeholder = new JLabel("image goes here");
-		image.add(placeholder);
 		image.add(new JLabel(new ImageIcon(im)));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		// @wbp.parser.constructor
@@ -283,22 +311,22 @@ public class View extends JFrame {
 		Complex movement = new Complex(0, 0);
 		switch (direction) {
 		case 1:
-			movement = m.getOrigin().add(-distance);
+			movement = Complex.ZERO.add(-distance);
 			break;
 		case 2:
-			movement = m.getOrigin().add(distance);
+			movement = Complex.ZERO.add(distance);
 			break;
 		case 3:
-			movement = m.getOrigin().add(right);
+			movement = right;
 			break;
 		case 4:
-			movement = m.getOrigin().add(left);
+			movement = left;
 			break;
 		}
 		m.genButton(0, Integer.parseInt(imageSize.getText()),
 				Double.parseDouble(gap.getText()), new Complex((Double.parseDouble(complexRealPart.getText())),
 						(Double.parseDouble(complexImagPart.getText()))),
-				colors, movement);
+				colors, movement.add(m.getOrigin()));
 		im = m.generateImage();
 		image.add(new JLabel(new ImageIcon(im)));
 		image.invalidate();
@@ -306,6 +334,14 @@ public class View extends JFrame {
 		image.repaint();
 		this.pack();
 		this.repaint();
+	}
+	
+	private void updateColorsLabel(int slider) {
+		switch (slider) {
+		case 1: displayR.setText("R : "+String.valueOf(sliderR.getValue())); break;
+		case 2: displayG.setText("V : "+String.valueOf(sliderV.getValue())); break;
+		case 3: displayB.setText("B : "+String.valueOf(sliderB.getValue())); break;
+		}
 	}
 
 }
