@@ -10,6 +10,7 @@ public class Calcul {
 	private final Complex graphOrigin;
 	private final double step;
 	private final double planSize;
+	private final int col;
 
 	public static class Builder {
 		
@@ -23,6 +24,7 @@ public class Calcul {
 		private double step;
 		private int tabX;
 		private int tabY; 
+		private int col;
 
 		public Builder() {
 			this.maxIter = 1000;
@@ -30,6 +32,7 @@ public class Calcul {
 			this.step = 0.0;
 			this.planSize = 0.0;
 			this.radius = 2.0;
+			this.col=1;
 		}
 		public Builder size(int x,int y) {
 			this.tabX= x;
@@ -64,40 +67,50 @@ public class Calcul {
 			this.radius=x;
 			return this;
 		}
-		
-		Complex[][] fillGraph() {
-			for (int i = 0; i < tabX; i++) {
-				for (int j = 0; j < tabY; j++) {
-					graph[i][j] = new Complex(graphOrigin.getReal() - planSize+ j * step,
-							graphOrigin.getImaginary() +planSize - i * step);
-				}
-			}
-			System.out.println(graph[0][0]);
-			return graph;
+		public Builder col (int col) {
+			this.col=col;
+			return this;
 		}
-		
-		public Calcul build() {
-			//TODO : Check illegal argument
-			if (tabX==0.0) {
-				tabX= (int) (planSize/step)*2;
-				tabY = (int) (planSize/step)*2;
-				//System.out.println(tabX);
-				//TODO: utiliser l'autre val de planSize	
-			}
-			if (planSize==0.0) {
-				planSize = step*tabX/2;
-				//System.out.println("planSize: " + planSize);
-			}
-			if (step==0.0){
-				step=planSize/tabX*2;
-				//System.out.println("step: " + step);
-			}
-			if(graphOrigin==null)
-				this.graphOrigin = new Complex(0,0);
-			graph = new Complex[tabX][tabY];
-			fillGraph();
-			System.out.println(graphOrigin);
-			return new Calcul(this);
+		Complex[][] fillGraph() {
+            for (int i = 0; i < tabX+1; i++) {
+                for (int j = 0; j < tabY+1; j++) {
+                    graph[i][j] = new Complex(graphOrigin.getReal() - planSize + j * step,
+                            graphOrigin.getImaginary() +planSize - i * step);
+                }
+            }
+            /*System.out.println("Graph [0][0] : " + graph[0][0]);
+            System.out.println("Graph [0][1] : " + graph[0][1]);
+            System.out.println("Graph [1][0] : " + graph[1][0]);
+            System.out.println("Graph [0][tabX] : " + graph[0][tabY]);
+            System.out.println("Graph [tabX][tabX] : " + graph[tabX][tabY]);*/
+            
+            return graph;
+        }
+        
+        public Calcul build() {
+            //TODO : Check illegal argument
+            if (tabX==0.0) {
+                tabX= (int) (planSize/step)*2;
+                tabY = (int) (planSize/step)*2;
+                //System.out.println(tabX);
+                //TODO: utiliser l'autre val de planSize    
+            }
+            if (planSize==0.0) {
+                planSize = step*tabX/2;
+                //System.out.println("planSize: " + planSize);
+            }
+            if (step==0.0){
+                step=planSize/tabX*2;
+                //System.out.println("step: " + step);
+            }
+            if(graphOrigin==null)
+                this.graphOrigin = new Complex(0,0);
+            graph = new Complex[tabX+1][tabY+1];
+            fillGraph();
+            System.out.println(graphOrigin);
+            return new Calcul(this);
+        
+    
 		}
 	}
 	// valeurs obligatoires : tabsizes et step ou tabsizes et planSize ou planSize
@@ -112,6 +125,7 @@ public class Calcul {
 		step = builder.step;
 		graph = builder.graph;
 		planSize = builder.planSize;
+		col = builder.col;
 		// colors= new int[builder.tabX][builder.tabY];
 	}
 
@@ -153,7 +167,9 @@ public class Calcul {
 	public int getY() {
 		return graph[0].length;
 	}
-
+	public Complex getOrigin() {
+		return graphOrigin;
+	}
 
 public double getPlan() {
 		return planSize;
@@ -169,5 +185,8 @@ public double getPlan() {
 
 	public int getMaxIter() {
 		return maxIter;
+	}
+	public int getCol() {
+		return col;
 	}
 }

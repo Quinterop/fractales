@@ -48,26 +48,26 @@ public class ImageGenerator {
 			final int k = i;
 			//System.out.println("aaaaa"+i);
 			//System.out.println(latch.getCount());
-			
-			if (i == div - 1 && div * nombreThreads != tabX) {
-				
+			//supprimer bloc if ?
+			if (i == nombreThreads - 1 && div * nombreThreads != tabX) {
+				System.out.println("test");
 				threads[i] = new Thread(() -> {
 					range(k * div, tabX)
 					.parallel()
 					.forEach(a -> range(0, tabY)
 							.parallel()
-							.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
+							.forEach(j -> image.setRGB(a, j, calculate(c, a, j)<<16)));
 					//latch.countDown();
 				});
 				threads[i].start();
 			}else {
-			
+
 				threads[k] = new Thread(() -> {
 				range(k * div, div * (k + 1))
 				.parallel()
-						.forEach(a -> range(0, tabY)
+						.forEach(a -> range(0, tabY)    
 								.parallel()
-								.forEach(j -> image.setRGB(a, j, calculate(c, a, j))));
+								.forEach(j -> image.setRGB(a, j, (Color.HSBtoRGB((float)calculate(c, a, j)/1000+c.getCol(), 1f, 1f)))));
 				//latch.countDown();
 				//System.out.println(latch.getCount());
 			});
