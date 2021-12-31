@@ -1,6 +1,8 @@
+
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,10 +21,8 @@ import org.apache.commons.math3.complex.Complex;
 import java.awt.event.*;
 
 public class View extends JFrame {
-	// private Controller c;
-	private Controller m;
+	private Controller main;
 	private static final Dimension MAX_TEXT_SIZE = new Dimension(100, 20);
-	private static final Dimension MAX_SLIDER_SIZE = new Dimension(180, 20);
 	private BufferedImage im;
 	private JTextField gap;
 	private JTextField complexRealPart;
@@ -42,31 +42,20 @@ public class View extends JFrame {
 		this.getContentPane().add(new JLabel(new ImageIcon(im)));
 		pack();
 		setVisible(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
-	/**
-	 * @wbp.parser.constructor
-	 */
-	public View(Controller m) throws InterruptedException {
-		// @wbp.parser.constructor
+
+
+	public View(Controller main) throws InterruptedException {
 		super("fractales");
-		// frame
-		this.m = m;
-		this.im = m.generateImage();
+		this.main = main;
+		this.im = main.generateImage();
 		JPanel params = new JPanel();
 		params.setMaximumSize(MAX_TEXT_SIZE);
 		params.setBorder(null);
 		params.setLayout(new BoxLayout(params, BoxLayout.X_AXIS));
-		// params.setMaximumSize((new
-		// Dimension(190-image.getHeight(),100-image.getWidth())));
-
 		image = new JPanel();
 
-		/*
-		 * ButtonGroup g = new ButtonGroup(); JRadioButton jul = new
-		 * JRadioButton("Julia"); JRadioButton mandel = new JRadioButton("Mandelbrot");
-		 * g.add(jul); g.add(mandel);
-		 */
 
 		Box verticalBox = Box.createVerticalBox();
 		verticalBox.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -75,8 +64,6 @@ public class View extends JFrame {
 		Box imparams = Box.createHorizontalBox();
 		imparams.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		verticalBox.add(imparams);
-
-		
 
 		JLabel gapL = new JLabel("Pas de calcul : ");
 		imparams.add(gapL);
@@ -91,7 +78,6 @@ public class View extends JFrame {
 		imageSize = new JTextField("500");
 		imageSize.setMaximumSize(new Dimension(100, 20));
 		imparams.add(imageSize);
-
 
 		Box row2 = Box.createHorizontalBox();
 		row2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -111,8 +97,8 @@ public class View extends JFrame {
 		row2.add(complexImagPart);
 		complexImagPart.setMaximumSize(MAX_TEXT_SIZE);
 
-		JLabel lblNewLabel_1 = new JLabel("i ");
-		row2.add(lblNewLabel_1);
+		JLabel labl1 = new JLabel("i ");
+		row2.add(labl1);
 
 		Box moveRow = Box.createHorizontalBox();
 		moveRow.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -136,28 +122,28 @@ public class View extends JFrame {
 
 		left.addActionListener(e -> {
 			try {
-				changeImage(4, (double) Double.parseDouble(moveDist.getText()));
+				changeImage(4, Double.parseDouble(moveDist.getText()));
 			} catch (NumberFormatException | InterruptedException e4) {
 				e4.printStackTrace();
 			}
 		});
 		right.addActionListener(e -> {
 			try {
-				changeImage(3, (double) Double.parseDouble(moveDist.getText()));
+				changeImage(3, Double.parseDouble(moveDist.getText()));
 			} catch (NumberFormatException | InterruptedException e3) {
 				e3.printStackTrace();
 			}
 		});
 		down.addActionListener(e -> {
 			try {
-				changeImage(2, (double) Double.parseDouble(moveDist.getText()));
+				changeImage(2, Double.parseDouble(moveDist.getText()));
 			} catch (NumberFormatException | InterruptedException e2) {
 				e2.printStackTrace();
 			}
 		});
 		up.addActionListener(e -> {
 			try {
-				changeImage(1, (double) Double.parseDouble(moveDist.getText()));
+				changeImage(1, Double.parseDouble(moveDist.getText()));
 			} catch (NumberFormatException | InterruptedException e2) {
 				e2.printStackTrace();
 			}
@@ -174,63 +160,34 @@ public class View extends JFrame {
 		zoomRow.add(unzoom);
 		
 		zoomVal = new JTextField();
-		zoomVal.setText("20");
+		zoomVal.setText("10");
 		zoomVal.setMaximumSize(new Dimension(100, 20));
 		zoomVal.setColumns(10);
 		zoomRow.add(zoomVal);
+		
+		Component horizontalGlue = Box.createHorizontalGlue();
+		zoomRow.add(horizontalGlue);
 		
 		Box boxR = Box.createHorizontalBox();
 		verticalBox.add(boxR);
 		
 		sliderR = new JSlider();
-		sliderR.setValue(1);
+		sliderR.setValue(0);
 		sliderR.setToolTipText("Rouge");
 		sliderR.setSnapToTicks(true);
 		sliderR.setPaintLabels(true);
 		sliderR.setMinimum(0);
 		sliderR.setMaximumSize(new Dimension(180, 20));
-		sliderR.setMaximum(255);
+		sliderR.setMaximum(360);
 		boxR.add(sliderR);
 		
 		displayR = new JLabel("R : "+sliderR.getValue());
 		boxR.add(displayR);
 		
-		Box boxV = Box.createHorizontalBox();
-		verticalBox.add(boxV);
+		Component horizontalGlue_3 = Box.createHorizontalGlue();
+		boxR.add(horizontalGlue_3);
+	
 		
-		sliderV = new JSlider();
-		sliderV.setValue(1);
-		sliderV.setToolTipText("Vert");
-		sliderV.setSnapToTicks(true);
-		sliderV.setPaintLabels(true);
-		sliderV.setMinimum(0);
-		sliderV.setMaximumSize(new Dimension(180, 20));
-		sliderV.setMaximum(255);
-		sliderV.setForeground(Color.GREEN);
-		boxV.add(sliderV);
-		
-		displayG = new JLabel("V : "+sliderV.getValue());
-		boxV.add(displayG);
-		
-		Box boxB = Box.createHorizontalBox();
-		verticalBox.add(boxB);
-		
-		sliderB = new JSlider();
-		sliderB.setValue(1);
-		sliderB.setToolTipText("Bleu");
-		sliderB.setSnapToTicks(true);
-		sliderB.setPaintLabels(true);
-		sliderB.setMinimum(0);
-		sliderB.setMaximumSize(new Dimension(180, 20));
-		sliderB.setMaximum(255);
-		sliderB.setForeground(Color.BLUE);
-		boxB.add(sliderB);
-		
-		displayB = new JLabel("B : "+sliderB.getValue());
-		boxB.add(displayB);
-
-		JLabel colorsLabel = new JLabel("Couleurs : R G B");
-		verticalBox.add(colorsLabel);
 
 
 		JButton gen = new JButton("Generer !");
@@ -238,12 +195,9 @@ public class View extends JFrame {
 
 		Component verticalGlue = Box.createVerticalGlue();
 		verticalBox.add(verticalGlue);
-		// TODO: Mettre des listeners pour set la derniere valeur (se trigger quand on
-		// fait entrée)
 		
 		sliderR.addChangeListener(e -> updateColorsLabel(1));
-		sliderV.addChangeListener(e -> updateColorsLabel(2));
-		sliderB.addChangeListener(e -> updateColorsLabel(3));
+
 
 		gen.addActionListener(e -> {
 			try {
@@ -255,35 +209,52 @@ public class View extends JFrame {
 		zoom.addActionListener(e -> {
             try {
                 String str = Double
-                        .toString(Double.parseDouble(gap.getText()) / (Double.parseDouble(zoomVal.getText()) * 0.09));
-                System.out.println("zoom : " + Double.parseDouble(zoomVal.getText()) * 0.9);
-                System.out.println("str : " + str);
-                gap.setText(str);
-                changeImage(0,0);
+                    .toString(Double.parseDouble(gap.getText()) / ((Double.parseDouble(zoomVal.getText()) + 12) * 0.09));
+                double st = Double.parseDouble(gap.getText()) / ((Double.parseDouble(zoomVal.getText())+ 12) * 0.09);
+                if (st < Double.parseDouble(gap.getText())){
+                    gap.setText(str);
+                    changeImage(0,0);
+                }
             } catch (InterruptedException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            
         });
         
         unzoom.addActionListener(e -> {
             try {
                 String str = Double
-                        .toString(Double.parseDouble(gap.getText()) * (Double.parseDouble(zoomVal.getText()) * 0.09));
-                System.out.println("zoom : " + Double.parseDouble(zoomVal.getText()) * 0.9);
-                System.out.println("str : " + str);
-                gap.setText(str);
-                changeImage(0,0);
+                            .toString(Double.parseDouble(gap.getText()) * ((Double.parseDouble(zoomVal.getText())+12) * 0.09));
+                    double st = Double.parseDouble(gap.getText()) * ((Double.parseDouble(zoomVal.getText())+ 12) * 0.09);
+                    if (st > Double.parseDouble(gap.getText())){
+                        gap.setText(str);
+                        changeImage(0,0);
+                    }
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+    
+
+        });
+        
+        JButton saveButton = new JButton("Sauvegarder");
+        verticalBox.add(saveButton);
+        
+        saveButton.addActionListener(e -> {
+            try {
+            	 BufferedImage img = main.generateImage();
+                File outputfile = new File("image.jpg");
+                ImageIO.write(img, "jpg", outputfile);
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
-            System.out.println("Handled Lambda listener");
-            System.out.println("Have fun!");
         });
 
-		im = m.generateImage();
+		im = main.generateImage();
 		image.add(new JLabel(new ImageIcon(im)));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		// @wbp.parser.constructor
@@ -296,16 +267,13 @@ public class View extends JFrame {
 		this.setVisible(true);
 	}
 
-	private int colorsToInt(int r, int g, int b) {
-		int rgb = r;
-		rgb = (rgb << 8) + g;
-		rgb = (rgb << 8) + b;
-		return rgb;
-	}
+	
+	
+	
 
 	private void changeImage(int direction, double distance) throws InterruptedException {
 		image.removeAll();
-		int colors = colorsToInt(sliderR.getValue(), sliderV.getValue(), sliderB.getValue());
+		int colors = sliderR.getValue();
 		Complex left = new Complex(0, distance);
 		Complex right = new Complex(0, -distance);
 		Complex movement = new Complex(0, 0);
@@ -323,11 +291,12 @@ public class View extends JFrame {
 			movement = left;
 			break;
 		}
-		m.genButton(0, Integer.parseInt(imageSize.getText()),
+//TODO: ajouter thread pour le calcul+ bouton stop
+		main.genButton(0, Integer.parseInt(imageSize.getText()),
 				Double.parseDouble(gap.getText()), new Complex((Double.parseDouble(complexRealPart.getText())),
 						(Double.parseDouble(complexImagPart.getText()))),
-				colors, movement.add(m.getOrigin()));
-		im = m.generateImage();
+				colors, movement.add(main.getOrigin()));
+		im = main.generateImage();
 		image.add(new JLabel(new ImageIcon(im)));
 		image.invalidate();
 		image.revalidate();

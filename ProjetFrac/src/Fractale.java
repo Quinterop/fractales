@@ -1,3 +1,4 @@
+
 import org.apache.commons.math3.complex.Complex;
 import java.math.*;
 
@@ -26,7 +27,7 @@ public class Fractale {
 		private int tabY;
 		private int col;
 
-		public Builder() {
+		public Builder() { //champs obligatoires
 			this.maxIter = 100000;
 			this.comp = new Complex(-0.7269, 0.1889);
 			this.step = 0.0;
@@ -34,12 +35,13 @@ public class Fractale {
 			this.radius = 2.0;
 			this.col = 1;
 		}
-
+//methodes facultatives
 		public Builder size(int x, int y) {
 			this.tabX = x;
 			this.tabY = y;
 			return this;
 		}
+		
 
 		public Builder plan(double x) {
 			this.planSize = x;
@@ -81,51 +83,39 @@ public class Fractale {
 			return this;
 		}
 
-		Complex[][] fillGraph() {
+		Complex[][] fillGraph() { //remplit le tableau de complexes 
 			for (int i = 0; i < tabX + 1; i++) {
 				for (int j = 0; j < tabY + 1; j++) {
 					graph[i][j] = new Complex(graphOrigin.getReal() - planSize + j * step,
 							graphOrigin.getImaginary() + planSize - i * step);
 				}
 			}
-			/*
-			 * System.out.println("Graph [0][0] : " + graph[0][0]);
-			 * System.out.println("Graph [0][1] : " + graph[0][1]);
-			 * System.out.println("Graph [1][0] : " + graph[1][0]);
-			 * System.out.println("Graph [0][tabX] : " + graph[0][tabY]);
-			 * System.out.println("Graph [tabX][tabX] : " + graph[tabX][tabY]);
-			 */
 
 			return graph;
 		}
 
-		public Fractale build() {
-			// TODO : Check illegal argument
+		public Fractale build() { //initialisation auto des champs
+
 			if (tabX == 0.0) {
 				tabX = (int) (planSize / step) * 2;
 				tabY = (int) (planSize / step) * 2;
-				// System.out.println(tabX);
 				// TODO: utiliser l'autre val de planSize
 			}
 			if (planSize == 0.0) {
 				planSize = step * tabX / 2;
-				// System.out.println("planSize: " + planSize);
 			}
 			if (step == 0.0) {
 				step = planSize / tabX * 2;
-				// System.out.println("step: " + step);
 			}
 			if (graphOrigin == null)
 				this.graphOrigin = new Complex(0, 0);
 			graph = new Complex[tabX + 1][tabY + 1];
 			fillGraph();
-			System.out.println(graphOrigin);
 			return new Fractale(this);
 
 		}
 	}
-	// valeurs obligatoires : tabsizes et step ou tabsizes et planSize ou planSize
-	// et step
+	// valeurs obligatoires : tabsizes et step ou tabsizes et planSize ou planSize et step
 
 	public Fractale(Builder builder) {
 		comp = builder.comp;
@@ -137,20 +127,14 @@ public class Fractale {
 		graph = builder.graph;
 		planSize = builder.planSize;
 		col = builder.col;
-		// colors= new int[builder.tabX][builder.tabY];
 	}
 
-	/*
-	 * public Fractale(int x, int y, double h, Complex c) { this.colors = new
-	 * int[x][y]; this.graph = new Complex[x][y]; this.step = h; this.graphOrigin =
-	 * c; this.radius = 2.0; }
-	 */
 
 	static double module(Complex z) {
 		return Math.sqrt(z.getReal() * z.getReal() + z.getImaginary() * z.getImaginary());
 	}
 
-	int divergenceIndex(Complex z0) {
+	int divergenceIndex(Complex z0) { //calcule l'index (aka la couleur) d'un complexe
 		int ite = 0;
 		Complex zn = z0;
 		// sortie de boucle si divergence
@@ -161,13 +145,11 @@ public class Fractale {
 			ite++;
 		}
 
-		// System.out.println(ite);
 		return ite;
 	}
 
-	// RENVOYER COPIES ?
 	Complex[][] getGraph() {
-		return graph; // renvoyer une copie ?
+		return graph; 
 	}
 
 	public int getX() {

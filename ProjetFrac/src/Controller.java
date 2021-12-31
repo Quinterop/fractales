@@ -1,3 +1,4 @@
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,33 +17,31 @@ public class Controller {
 			this.calcul = b.build();
 			ImageGenerator img = new ImageGenerator(calcul,Runtime.getRuntime().availableProcessors());
 			new View(img.image);
-			File outputfile = new File("image.jpg");
+			File outputfile = new File("fractale.jpg");
 			ImageIO.write(img.image, "jpg", outputfile);
 		} else {
 			this.calcul = defaultCalcul;
-			this.initDefault();
+			new View(this);
 		}
 	}
 
 	public boolean chooseView() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("vue terminale ->1. vue IG -> 2");
-		if (sc.nextInt() == 1)
-			return true;
-		return false;
+		return sc.nextInt() == 1;
 	}
 
-	public Fractale.Builder maker() {
+	public Fractale.Builder maker() { //pour vue terminal
 		Complex x = selectJulia();
-		// ImageGenerator g = new ImageGenerator();
 		Scanner sc = new Scanner(System.in);
-		System.out.println("select one :" + '\n' + 
-				"1 : step and imagesize" + '\n' + 
-				"2 : complex plan size and step"
-				+ '\n' + "3 : imagesize and plan size");
+		System.out.println("choisir un :" + '\n' + 
+				"1 : spas et taille d'abcisse d'image" + '\n' + 
+				"2 : taille du plan complexe et pas"
+				+ '\n' + "3 : taille d'abcisse d'image et taille du plan complexe ");
 		int choice = sc.nextInt();
 		double step = 0.0;
 		int size = 0;
+		int size2 = selectHeight();
 		double planSize = 0.0;
 		switch (choice) {
 		case 1: {
@@ -63,29 +62,32 @@ public class Controller {
 		}
 		System.out.println("choisir le nombre d'iterations max");
 		int maxIter = sc.nextInt();
-		return new Fractale.Builder().step(step).plan(planSize).size(size,size).maxIter(maxIter);
+		System.out.println("choisir le radius (double)");
+		int radius = sc.nextInt();
+		Complex origin=selectOrigin();
+		return new Fractale.Builder().step(step).plan(planSize).size(size,size2).maxIter(maxIter).radius(radius).graphOrigin(origin).comp(x);
 	}
 
 	public static int selectHeight() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("select height");
+		System.out.println("choisir hauteur");
 		// String input
 		return sc.nextInt();
 	}
 
 	public static int selectLength() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("select length");
+		System.out.println("choisir largeur");
 		// String input
 		return sc.nextInt();
 	}
 
-	public static Complex selectLeftTopComplex() {
+	public static Complex selectOrigin() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Choose the top left point of the rectangle");
-		System.out.println("Choose the real part : ");
+		System.out.println("Choisissez le milieu de la vue (complexe)");
+		System.out.println("partie reelle : ");
 		int x = sc.nextInt();
-		System.out.println("Choose the imaginary part : ");
+		System.out.println("partie imaginaire : ");
 		int y = sc.nextInt();
 		return new Complex(x, y);
 	}
@@ -105,92 +107,29 @@ public class Controller {
 		Complex c = new Complex(real, imaginary);
 		return c;
 	}
-
-	public Complex getOrigin() {
-		return calcul.getOrigin();
+	
+	public BufferedImage generateImage() throws InterruptedException { //pour vue terminal
+		ImageGenerator g = new ImageGenerator(calcul, Runtime.getRuntime().availableProcessors());
+		return g.image;
 	}
 
-	public void generate() throws InterruptedException {
-		Fractale c = new Fractale.Builder().plan(0.5).size(500, 500).build();
+	public Complex getOrigin() { //passerelles entre la vue et le modèle
+		return calcul.getOrigin();
 	}
 
 	public void genButton(double plan, int size, double step, Complex c, int colors, Complex newOrigin) {
 		Fractale calc = new Fractale.Builder().plan(plan).size(size, size).step(step).comp(c).col(colors)
 				.graphOrigin(newOrigin).build();
 		this.calcul = calc;
-
 	}
 
-	public BufferedImage generateImage() throws InterruptedException {
-		ImageGenerator g = new ImageGenerator(calcul, Runtime.getRuntime().availableProcessors());
-		return g.image;
-	}
-
-	public void initDefault() throws InterruptedException {
-		new View(this);
-	}
-
-	public static void main(String[] args) throws InterruptedException, IOException {
-
+	public static void main(String[] args)  {
 		Fractale defaultCalcul = new Fractale.Builder().step(0.01).size(500, 500).build();
-		Controller m = new Controller(defaultCalcul);
-		Complex y = new Complex(-0.7269, 0.1889);
-
+		try {
+			Controller m = new Controller(defaultCalcul);
+		} catch (InterruptedException | IOException e) {		
+			e.printStackTrace();
+		}
 	}
-
-	/*
-	 * public static int[] selectJulia() { Scanner sc = new Scanner(System.in);
-	 * System.out.println("choisir plus grand indice de x dans z"); int tabsize =
-	 * sc.nextInt() + 1; int[] poly = new int[tabsize]; for (int i = 0; i < tabsize;
-	 * i++) { System.out.println("choisir le facteur de x^" + i); poly[i] =
-	 * sc.nextInt(); } return poly; }
-	 */
-	// Fractale c = new Fractale.Builder().size(2000,2000).step(0.001).build();
-	// ImageGenerator g = new
-	// ImageGenerator(c,Runtime.getRuntime().availableProcessors());
-
-	/*
-	 * Complex x = new Complex(-0.7269, 0.1889); Fractale m = new Fractale(); m.comp =
-	 * selectJulia2(); m.polynome = selectJulia();
-	 * System.out.print("fonction: f(x)="); for (int i = m.polynome.length - 1; i >=
-	 * 0; i--) System.out.print(m.polynome[i] + "" + "x" + "^" + i + "+ ");
-	 * System.out.print(m.comp); m.fill(); ImageGenerator g = new ImageGenerator();
-	 * g.imageDrawer(m.calculate()); View v = new View(g.image); Fractale m = new
-	 * Fractale(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
-	 * m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
-	 * View(g.image); <<<<<<< HEAD ======= public BufferedImage generate() { Fractale
-	 * c = new Fractale.Builder().plan(1.0).size(500, 500).build(); ImageGenerator g =
-	 * new ImageGenerator(c); return g.image; } public BufferedImage generate2() {
-	 * Fractale c = new Fractale.Builder().plan(1.0).size(400, 400).build();
-	 * ImageGenerator g = new ImageGenerator(c); return g.image; } >>>>>>> branch
-	 * 'Stream' of
-	 * https://gaufre.informatique.univ-paris-diderot.fr/sya/projetfract.git
-	 * 
-	 * 
-	 * public static void main(String[] args) { /*
-	 * System.out.println("vue terminal(1) ou GUI(2) ?"); Scanner sc = new
-	 * Scanner(System.in); if (sc.nextInt() == 1) {
-	 * 
-	 * } else {
-	 * 
-	 * }
-	 */
-
-	// Fractale c = new Fractale.Builder().plan(1.0).size(200,500).build();
-	// ImageGenerator g = new ImageGenerator(c);
-	// View v = new View(g.image);
-
-	/*
-	 * // Complex x = new Complex(-0,7269, 0,1889); Fractale m = new Fractale(); m.comp
-	 * = selectJulia2(); m.polynome = selectJulia();
-	 * System.out.print("fonction: f(x)="); for (int i = m.polynome.length - 1; i >=
-	 * 0; i--) System.out.print(m.polynome[i] + "" + "x" + "^" + i + "+ ");
-	 * System.out.print(m.comp); m.fill(); ImageGenerator g = new ImageGenerator();
-	 * g.imageDrawer(m.calculate()); View v = new View(g.image); Fractale m = new
-	 * Fractale(selectHeight(), selectLength(), selectStep(), selectLeftTopComplex());
-	 * m.comp = x; m.fill(); g.imageDrawer(m.calculate()); View v = new
-	 * View(g.image);
-	 * 
-	 */
 
 }
