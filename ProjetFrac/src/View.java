@@ -25,7 +25,6 @@ public class View extends JFrame {
 
 	// @wbp.parser.constructor
 	private BufferedImage im;
-	private JTextField plan;
 	private JTextField gap;
 	private JTextField complexRealPart;
 	private JTextField complexImagPart;
@@ -35,6 +34,16 @@ public class View extends JFrame {
 	private JSlider sliderV;
 	private JSlider sliderB;
 
+	public View(BufferedImage im) {
+		super("fractales");
+		this.getContentPane().add(new JLabel(new ImageIcon(im)));
+		pack();
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public View(Main m) throws InterruptedException {
 		// @wbp.parser.constructor
 		super("fractales");
@@ -64,12 +73,7 @@ public class View extends JFrame {
 		imparams.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		verticalBox.add(imparams);
 
-		JLabel planL = new JLabel("Taille du plan complexe : ");
-		imparams.add(planL);
-
-		plan = new JTextField("1");
-		imparams.add(plan);
-		plan.setMaximumSize(MAX_TEXT_SIZE);
+		
 
 		JLabel gapL = new JLabel("Pas de calcul : ");
 		imparams.add(gapL);
@@ -78,8 +82,6 @@ public class View extends JFrame {
 		imparams.add(gap);
 		gap.setMaximumSize(MAX_TEXT_SIZE);
 
-		JLabel info = new JLabel("laisser 1 case vide pour autocompletion");
-		imparams.add(info);
 
 		Box row2 = Box.createHorizontalBox();
 		row2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -162,6 +164,7 @@ public class View extends JFrame {
 		zoomVal.setText("20");
 		moveRow.add(zoomVal);
 		zoomVal.setColumns(10);
+		zoomVal.setMaximumSize(MAX_TEXT_SIZE);
 
 		JButton zoom = new JButton("Zoom");
 		moveRow.add(zoom);
@@ -184,28 +187,22 @@ public class View extends JFrame {
 		});
 		unzoom.addActionListener(e -> {
 
-			image.removeAll();
-			try {
-				String str = Double
-						.toString(Double.parseDouble(gap.getText()) / (Double.parseDouble(zoomVal.getText()) / 0.09));
-				gap.setText(str);
-				changeImage(0,0);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			image.add(new JLabel(new ImageIcon(im)));
 
-			image.invalidate();
+            try {
+                String str = Double
+                        .toString(Double.parseDouble(gap.getText()) * (Double.parseDouble(zoomVal.getText()) * 0.09));
+                System.out.println("zoom : " + Double.parseDouble(zoomVal.getText()) * 0.9);
+                System.out.println("str : " + str);
+                gap.setText(str);
+                changeImage(0,0);
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 
-			image.revalidate();
-
-			image.repaint();
-			this.pack();
-
-			System.out.println("Handled Lambda listener");
-			System.out.println("Have fun!");
-		});
+            System.out.println("Handled Lambda listener");
+            System.out.println("Have fun!");
+        });
 
 		JLabel colorsLabel = new JLabel("Couleurs : R G B");
 		verticalBox.add(colorsLabel);
@@ -298,7 +295,7 @@ public class View extends JFrame {
 			movement = m.getOrigin().add(left);
 			break;
 		}
-		m.genButton(Double.parseDouble(plan.getText()), Integer.parseInt(imageSize.getText()),
+		m.genButton(0, Integer.parseInt(imageSize.getText()),
 				Double.parseDouble(gap.getText()), new Complex((Double.parseDouble(complexRealPart.getText())),
 						(Double.parseDouble(complexImagPart.getText()))),
 				colors, movement);

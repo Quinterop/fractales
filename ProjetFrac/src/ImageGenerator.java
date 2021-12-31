@@ -56,7 +56,7 @@ public class ImageGenerator {
 					.parallel()
 					.forEach(a -> range(0, tabY)
 							.parallel()
-							.forEach(j -> image.setRGB(a, j, calculate(c, a, j)<<16)));
+							.forEach(j -> image.setRGB(a, j, (Color.HSBtoRGB((float)calculate(c, a, j)/1000+c.getCol(), 1f, 1f)))));
 					//latch.countDown();
 				});
 				threads[i].start();
